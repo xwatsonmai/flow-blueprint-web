@@ -27,11 +27,11 @@ setLogicNodes(businessNode)
 </script>
 
 <template>
-  <logic-node>
-    <template #config="config">
-      <createVar :config="config"></createVar>
-    </template>
-  </logic-node>
+<!--  <logic-node>-->
+<!--    <template #config="config">-->
+<!--      <createVar :config="config"></createVar>-->
+<!--    </template>-->
+<!--  </logic-node>-->
 <!--  <t-button>asd</t-button>-->
   <blueprint ></blueprint>
 </template>

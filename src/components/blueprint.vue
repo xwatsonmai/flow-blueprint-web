@@ -67,6 +67,9 @@ onMounted(() => {
     },
   });
   lf.register(BusinessNodeVue)
+  lf.on('node:mousemove', (node) => {
+    console.log('node:mousemove', node);
+  });
   lf.render(data);
 
 });
