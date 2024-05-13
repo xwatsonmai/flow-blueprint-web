@@ -68,16 +68,20 @@ onMounted(() => {
   });
   lf.register(BusinessNodeVue)
   lf.on('node:mousemove', (node) => {
-    console.log('node:mousemove', node);
+    // console.log('node:mousemove', node);
   });
   lf.render(data);
 
 });
 
+const debug = () => {
+  console.log(lf?.getGraphData())
+}
 
 </script>
 
 <template>
+  <t-button @click="debug">测试</t-button>
   <div id="container"></div>
 </template>
 

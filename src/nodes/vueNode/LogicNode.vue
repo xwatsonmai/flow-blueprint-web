@@ -1,68 +1,47 @@
 <script setup lang="ts">
-import {ref, watch} from "vue";
-import {TNode} from "../businessNode/node.ts";
+import {onMounted, ref, watch} from "vue";
+import {type Component} from "vue";
+import {TNode} from "../../define/node.ts";
 import {TLogicNode} from "../../define/TLogicNodeDefine.ts";
 import useLogicNode from "../../composables/LogicNode.ts";
 
-type Properties = {
-  name:string
-  config:any
-}
 
-type Config = {
-  name:string
-  value:string
-}
-
+const properties = defineModel("properties",{
+  type:Object as () => TNode<TLogicNode<any>>,
+  required:true,
+})
+const emits = defineEmits(['change'])
+onMounted(() =>{
+  console.log(properties)
+  const {getLogicNode} = useLogicNode()
+  width.value = getLogicNode(properties.value.config.logic_type).width
+  height.value = getLogicNode(properties.value.config.logic_type).height
+  formComponent.value =  getLogicNode(properties.value.config.logic_type).node_config
+})
+const formComponent = ref<Component>()
 const width = ref(200)
 const height = ref(100)
-let isInited = false
-const properties = ref<Record<string, any> | null>(null)
-const nodeConfig = ref<Properties>({
-  name:"",
-  config:null
-})
 
-
-const setProperties =(props:Record<string, any>)=>{
-  properties.value = props
+const debug = () => {
+  console.log(properties)
 }
 
-watch(properties,(newVal)=>{
-  if (newVal == null) return
-  const nodeProperties = newVal as TNode<TLogicNode<Config>>
-  nodeConfig.value = {
-    name:nodeProperties.name,
-    config:nodeProperties.config.logic_config
-  }
+watch(properties, (val)=> {
+  console.log(val)
+  emits('change',val)
+},{deep:true})
 
-  if (!isInited){
-    const {getLogicNode} = useLogicNode()
-    width.value = getLogicNode(nodeProperties.config.logic_type).width
-    height.value = getLogicNode(nodeProperties.config.logic_type).height
-    isInited = true
-  }
 
-})
-
-defineExpose({
-  setProperties
-})
 </script>
 
 <template>
   <div class="node" :style="{height:height + 'px',width: width + 'px'}">
     <div class="header">
-      <h4>  {{nodeConfig.name}}</h4>
+      <h4 @click="debug">  {{properties.name}}</h4>
     </div>
     <div class="body">
       <!-- 节点主体内容 -->
-
-      <template v-if="properties != null ">
-        <slot name="config" v-bind="nodeConfig.config"></slot>
-      </template>
-
-<!--      <slot name="config" v-bind="properties"></slot>-->
+      <component :is="formComponent" v-model:config="properties.config.logic_config"></component>
     </div>
   </div>
 </template>

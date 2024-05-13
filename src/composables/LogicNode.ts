@@ -14,7 +14,7 @@ export default function useLogicNode() {
     }
 
     const getLogicNode = (nodeType:string) => {
-        console.log(nodeType)
+        // console.log(nodeType)
         return LogicNode[nodeType]
     }
 
