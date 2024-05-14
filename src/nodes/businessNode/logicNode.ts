@@ -1,30 +1,33 @@
 import {HtmlNode, HtmlNodeModel} from "@logicflow/core";
 import business from "../vueNode/LogicNode.vue";
-import {App, createApp, h, isProxy, reactive} from "vue";
+import {App, createApp, h, reactive} from "vue";
 import {TLogicNode} from "../../define/TLogicNodeDefine.ts";
 import useLogicNode from "../../composables/LogicNode.ts";
 import {TNode} from "../../define/node.ts";
+import {NodeConfig} from "@logicflow/core/types/type";
+import GraphModel from "@logicflow/core/types/model/GraphModel";
 
-class LogicNodeView extends HtmlNode{
+class LogicNodeView extends HtmlNode {
     app: App<Element>;
     isMounted
     r
+
     constructor(props: any) {
         super(props);
-        console.log(2)
         this.isMounted = false // 用个属性来避免重复挂载
         // const appRef = ref(null);
         const properties = props.model.getProperties() as TNode<TLogicNode<any>>
         const refProperties = reactive(properties)
-        this.r =  h(business, {
+        props.model.setProperties(refProperties)
+        this.r = h(business, {
             properties: refProperties,
-            ["change"]:(value: TLogicNode<any>) => {
-                console.log(value)
-                console.log(refProperties)
+            onChange: (value: TLogicNode<any>) => {
+                // console.log(value)
+                props.model.setProperties(value)
             }
         })
         this.app = createApp({
-            render: () =>this.r,
+            render: () => this.r,
             mounted: () => {
                 // @ts-ignore
                 // appRef.value?.setProperties(props.model.getProperties());
@@ -33,13 +36,18 @@ class LogicNodeView extends HtmlNode{
 
 
     }
+
     setHtml(rootEl: HTMLElement) {
-        if (!this.isMounted){
+        if (!this.isMounted) {
+            this.isMounted = true
             const node = document.createElement("div");
             rootEl.appendChild(node);
             this.app.mount(node);
-        }else {
-            console.log(1212312)
+        } else {
+            // console.log(1212312)
+            // const p = this.props.model.getProperties() as TNode<TLogicNode<any>>
+            // p.config.logic_config.name = "asdasdasd"
+
             // this.r.component.props.properties = this.props.model.getProperties() // properties发生变化后，将properties作为props传给vue组件
 
         }
@@ -49,7 +57,17 @@ class LogicNodeView extends HtmlNode{
 }
 
 class LogicNodeModel extends HtmlNodeModel {
+    isMounted
+    constructor(data: NodeConfig, graphModel: GraphModel) {
+        super(data,graphModel);
+        this.isMounted = false
+    }
     setAttributes() {
+        // super.setAttributes();
+        if (this.isMounted){
+            return
+        }
+        this.isMounted = true
         const properties = this.properties as TNode<TLogicNode<any>>;
         const {getLogicNode} = useLogicNode()
         this.width = getLogicNode(properties.config.logic_type).width;

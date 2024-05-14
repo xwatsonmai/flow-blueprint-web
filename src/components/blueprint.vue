@@ -27,6 +27,7 @@ const data = {
       properties:{
         name:"变量设置",
         type:"logic",
+        output:[],
         config:{
           logic_type:"createVar",
           logic_config:{
@@ -65,12 +66,13 @@ onMounted(() => {
       type: 'dot',
       size: 20,
     },
+    textEdit: false,
   });
   lf.register(BusinessNodeVue)
   lf.on('node:mousemove', (node) => {
     // console.log('node:mousemove', node);
   });
-  lf.render(data);
+  lf.render(data);    
 
 });
 
