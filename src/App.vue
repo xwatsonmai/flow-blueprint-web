@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import Blueprint from "./components/blueprint.vue";
 import CreateVar from "./nodes/business/createVar.vue";
-import LogicNode from "./nodes/vueNode/LogicNode.vue";
-import {ref} from "vue";
+
 import {TLogicNodeDefine} from "./define/TLogicNodeDefine.ts";
 import useLogicNode from "./composables/LogicNode.ts";
+import StartNode from "./nodes/vueNode/startNode.vue";
 
 const businessNode:TLogicNodeDefine[] = [
   {

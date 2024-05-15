@@ -15,3 +15,13 @@ export type TOutput = {
     children?: TOutput[]
     row_key: string
 }
+
+export type TInput = {
+    key: string,
+    type: EDataType,
+    // 描述本节点的输出
+    desc: string
+    required: boolean
+    default: any
+
+}

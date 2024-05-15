@@ -54,7 +54,7 @@ const visible = ref(false)
   <div class="node" :style="{height:height + 'px',width: width + 'px'}">
     <div class="header">
       <h4 class="node-name" @click="debug"> {{ properties.name }}</h4>
-      <t-link hover="color" theme="primary" @click="visible = true">节点编辑</t-link>
+      <t-link hover="color" style="color: wheat" @click="visible = true">节点编辑</t-link>
     </div>
     <div class="body">
       <!-- 节点主体内容 -->
@@ -88,7 +88,7 @@ const visible = ref(false)
   width: 200px;
   border: 1px solid #adddf6;
   border-radius: 5px;
-  background-color: rgba(200, 236, 248, 0.56); /* 更改背景颜色为淡蓝色 */
+  background-color: rgb(255, 255, 255); /* 更改背景颜色为淡蓝色 */
   box-shadow: 0 0 10px rgba(173, 216, 230, 0.5); /* 添加阴影 */
   transition: all 0.3s ease; /* 添加过渡动画 */
 }
@@ -103,7 +103,7 @@ const visible = ref(false)
   align-items: center;
   flex: 1;
   border-bottom: 1px solid #B0BEC5;
-  background-color: rgba(123, 187, 230, 0.52); /* 更改背景颜色为天蓝色 */
+  background-color: #0052d9;/* 更改背景颜色为天蓝色 */
   padding: 0 10px; /* 添加内边距以避免内容贴边 */
 }
 

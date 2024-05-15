@@ -2,6 +2,8 @@
 import LogicFlow from '@logicflow/core';
 import {onMounted} from "vue";
 import BusinessNodeVue from "../nodes/businessNode/logicNode.ts";
+import StartNode from "../nodes/vueNode/startNode.vue";
+import startNode from "../nodes/startNode/startNode.ts";
 
 // const businessNode = defineModel("businessNode",{
 //   type: Array as () => TBusinessNode[],
@@ -18,6 +20,12 @@ const data = {
       x: 100,
       y: 150,
       text: '你好',
+    },
+    {
+      id: 52,
+      type: 'startNode',
+      x: 100,
+      y: 150,
     },
     {
       id: 21,
@@ -68,6 +76,7 @@ onMounted(() => {
     },
     textEdit: false,
   });
+  lf.register(startNode)
   lf.register(BusinessNodeVue)
   lf.on('node:mousemove', (node) => {
     // console.log('node:mousemove', node);
@@ -83,7 +92,9 @@ const debug = () => {
 </script>
 
 <template>
-  <t-button @click="debug">测试</t-button>
+<!--  <start-node></start-node>-->
+
+<!--  <t-button @click="debug">测试</t-button>-->
   <div id="container"></div>
 </template>
 
