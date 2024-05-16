@@ -1,10 +1,19 @@
-import {EDataType, NodeType} from "./define.ts";
+import {EDataType, ENodeType} from "./define.ts";
+import {TStartNode} from "./startNode.ts";
+import {TLogicNode} from "./TLogicNodeDefine.ts";
 
-export type TNode<T> = {
+type NodeConfigTypes = {
+    [ENodeType.LogicNode]: TLogicNode<any>;
+    [ENodeType.StartNode]: TStartNode;
+    [ENodeType.EndNode]: {};
+    [ENodeType.SwitchNode]: {};
+};
+export type TNode<T extends ENodeType> = {
     name: string
-    type:NodeType,
-    config:T
-    output:TOutput[]
+    type:T,
+    config:NodeConfigTypes[T];
+    source_nodes: string[]
+    target_nodes: string[]
 }
 
 export type TOutput = {
@@ -14,14 +23,4 @@ export type TOutput = {
     desc: string
     children?: TOutput[]
     row_key: string
-}
-
-export type TInput = {
-    key: string,
-    type: EDataType,
-    // 描述本节点的输出
-    desc: string
-    required: boolean
-    default: any
-
 }

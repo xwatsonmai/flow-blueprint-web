@@ -1,4 +1,4 @@
-export enum NodeType {
+export enum ENodeType {
     LogicNode = 'logicNode',
     StartNode = 'startNode',
     EndNode = 'endNode',

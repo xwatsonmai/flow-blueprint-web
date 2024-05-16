@@ -7,6 +7,7 @@ import {NodeConfig} from "@logicflow/core/types/type";
 import GraphModel from "@logicflow/core/types/model/GraphModel";
 import BaseNodeModel from "@logicflow/core/types/model/node/BaseNodeModel";
 import {EAnchorType, TAnchor} from "../../define/Anchor.ts";
+import {ENodeType} from "../../define/define.ts";
 
 class StartNodeView extends HtmlNode {
     app: App<Element>;
@@ -18,11 +19,15 @@ class StartNodeView extends HtmlNode {
         this.element = null
         this.isMounted = false // 用个属性来避免重复挂载
         // const appRef = ref(null);
-        const properties = props.model.getProperties() as TNode<TLogicNode<any>>
+        const properties = props.model.getProperties() as TNode<ENodeType.StartNode>
         const refProperties = reactive(properties)
-        props.model.setProperties(refProperties)
+        console.log(refProperties)
         this.r = vueRender(startNode, {
             properties: refProperties,
+            onChange: (value: TLogicNode<any>) => {
+                // console.log(value)
+                props.model.setProperties(value)
+            },
             onSizeChange: (value: {width:number}) => {
                 // console.log(value)
                 // props.model.setProperties(value)

@@ -8,6 +8,8 @@ import {NodeConfig} from "@logicflow/core/types/type";
 import GraphModel from "@logicflow/core/types/model/GraphModel";
 import BaseNodeModel from "@logicflow/core/types/model/node/BaseNodeModel";
 import {EAnchorType, TAnchor} from "../../define/Anchor.ts";
+import {TStartNode} from "../../define/startNode.ts";
+import {ENodeType} from "../../define/define.ts";
 
 class LogicNodeView extends HtmlNode {
     app: App<Element>;
@@ -101,7 +103,7 @@ class LogicNodeModel extends HtmlNodeModel {
         };
 
         this.isMounted = true
-        const properties = this.properties as TNode<TLogicNode<any>>;
+        const properties = this.properties as TNode<ENodeType.LogicNode>;
         const {getLogicNode} = useLogicNode()
         this.width = getLogicNode(properties.config.logic_type).width;
         this.height = getLogicNode(properties.config.logic_type).height;

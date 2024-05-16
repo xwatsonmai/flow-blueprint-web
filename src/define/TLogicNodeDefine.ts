@@ -1,4 +1,5 @@
 import {Component} from "vue";
+import {TOutput} from "./node.ts";
 
 export type TLogicNodeDefine = {
     node_type: string
@@ -11,4 +12,5 @@ export type TLogicNodeDefine = {
 export type TLogicNode<T> = {
     logic_type: string
     logic_config: T
+    output:TOutput[]
 }

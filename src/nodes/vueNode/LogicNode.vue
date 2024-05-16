@@ -43,7 +43,7 @@ watch(properties.value, () => {
 })
 
 const updateOutputHandler = (val: TOutput[]) => {
-  properties.value.output = val
+  properties.value.config.output = val
   // emits('change',properties.value)
 }
 
@@ -64,7 +64,7 @@ const visible = ref(false)
   </div>
 
   <t-dialog v-model:visible="visible" attach="body" :draggable="true" :show-overlay="false" mode="modeless"
-            :header="`${properties.name} 节点设置`">
+            :header="`节点设置：${properties.name} `">
     <t-form>
       <t-form-item label="节点名称">
         <t-input v-model="properties.name" placeholder="请输入节点名称"/>

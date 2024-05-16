@@ -1,49 +1,71 @@
 <script setup lang="ts">
-import {TNode} from "../../define/node.ts";
-import {TLogicNode} from "../../define/TLogicNodeDefine.ts";
-import {Component, ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 import {
+  Button as TButton,
+  Dialog as TDialog,
   Form as TForm,
   FormItem as TFormItem,
   Input as TInput,
-  Button as TButton,
   Link as TLink,
-  Dialog as TDialog, MessagePlugin
+    Divider as TDivider,
+  Switch as TSwitch,
+  Select as TSelect,
+  Option as TOption,
+  MessagePlugin
 } from "tdesign-vue-next";
-// const properties = defineModel("properties", {
-//   type: Object as () => TNode<TLogicNode<any>>,
-//   required: true,
-// })
+import {TStartNode, TStartNodeInput} from "../../define/startNode.ts";
+import {EDataType} from "../../define/define.ts";
+import {TNode} from "../../define/node.ts";
 
 const width = ref(550);
-const inputForm = ref<{
-  key: string;
-  required: boolean;
-}[]>([])
+
+const rootConfig = defineModel("properties", {
+  type: Object as () => TNode<TStartNode>,
+  required: true,
+  default: {
+    name: "开始节点",
+    type: "startNode",
+    config: {
+      input: []
+    }
+  }
+})
+onMounted(() => {
+  console.log(rootConfig.value)
+})
+
 
 const visible = ref(false);
 
-const emit = defineEmits(["sizeChange"]);
+const emit = defineEmits(["sizeChange","change"]);
 
 const addInput = () => {
-  inputForm.value.push({key:'',required:false})
+  rootConfig.value.config.input.push({default: undefined, desc: "", type: EDataType.String, key:'',required:false})
   emit("sizeChange", {width:width.value});
 }
 
-
-const editItem = ref({
+const editItem = ref<TStartNodeInput>({
   key: '',
-  required: false
+  required: false, default: undefined, desc: "", type: EDataType.String
 })
 
 const openEditInputItem = (index:number) => {
-  if ( inputForm.value[index].key == "") {
+  if ( rootConfig.value.config.input[index].key == "") {
     MessagePlugin.warning("请先填写入参名");
     return
   }
-  editItem.value = inputForm.value[index]
+  editItem.value = rootConfig.value.config.input[index]
   visible.value = true
 }
+
+const deleteItem = (index:number) => {
+  rootConfig.value.config.input.splice(index, 1)
+  emit("sizeChange", {width:width.value});
+}
+
+watch(rootConfig.value, () => {
+  emit('change', rootConfig.value)
+})
 </script>
 
 <template>
@@ -53,10 +75,12 @@ const openEditInputItem = (index:number) => {
     </div>
     <div class="body">
       <t-form>
-        <template v-for="(item,index) in inputForm">
+        <template v-for="(item,index) in  rootConfig.config.input">
           <t-form-item label="入参名" label-width="50">
-            <t-input v-model="item.key"  style="width: 90%;margin-right: 5px"></t-input>
+            <t-input v-model.trim="item.key"  style="width: 80%;margin-right: 5px"></t-input>
             <t-link hover="color" theme="primary" @click="openEditInputItem(index)">详情</t-link>
+            <t-divider layout="vertical" />
+            <t-link hover="color" theme="danger" @click="deleteItem(index)">删除</t-link>
           </t-form-item>
         </template>
         <t-form-item label-width="0">
@@ -66,8 +90,25 @@ const openEditInputItem = (index:number) => {
     </div>
   </div>
 
-  <t-dialog attach="body" v-model:visible="visible" :header="`字段编辑：${editItem.key}`">
-
+  <t-dialog attach="body" v-model:visible="visible" :header="`字段编辑：${editItem.key}`" width="50%" :cancel-btn="null" @confirm="visible = false">
+    <t-form>
+      <t-form-item label="是否必填">
+        <t-switch v-model="editItem.required"></t-switch>
+      </t-form-item>
+      <t-form-item label="默认值">
+        <t-input v-model.trim="editItem.default" :disabled="editItem.required"></t-input>
+      </t-form-item>
+      <t-form-item label="描述">
+        <t-input v-model.trim="editItem.desc"></t-input>
+      </t-form-item>
+      <t-form-item label="数据类型">
+        <t-select>
+          <t-option label="字符串" :value="EDataType.String"></t-option>
+          <t-option label="数字" :value="EDataType.Number"></t-option>
+          <t-option label="布尔值" :value="EDataType.Boolean"></t-option>
+        </t-select>
+      </t-form-item>
+    </t-form>
   </t-dialog>
 </template>
 
@@ -75,13 +116,12 @@ const openEditInputItem = (index:number) => {
 .node {
   display: flex;
   flex-direction: column;
-  height: 100px;
   width: 200px;
   border: 1px solid #adddf6;
   border-radius: 5px;
-  background-color: #FFFFFF; /* 更改背景颜色为淡蓝色 */
-  box-shadow: 0 0 10px rgba(173, 216, 230, 0.5); /* 添加阴影 */
-  transition: all 0.3s ease; /* 添加过渡动画 */
+  background-color: #FFFFFF;
+  box-shadow: 0 0 10px rgba(173, 216, 230, 0.5);
+  transition: all 0.3s ease;
 }
 
 .node:hover {
@@ -89,17 +129,18 @@ const openEditInputItem = (index:number) => {
 }
 
 .header {
+  height: 40px; /* 固定 header 的高度 */
   display: flex;
-  justify-content: center; /* 使得节点名称和按钮在水平方向上分散对齐 */
-  flex: 1;
+  justify-content: center;
   align-items: center;
   border-bottom: 1px solid #B0BEC5;
-  background-color: #f6685d;/* 更改背景颜色为天蓝色 */
-  padding: 0 10px; /* 添加内边距以避免内容贴边 */
+  background-color: #f6685d;
+  padding: 0 10px;
 }
 
 .body {
-  flex: 4;
+  min-height: 150px; /* 设置 body 的最小高度 */
+  height: auto; /* 让 body 的高度自适应内容 */
   padding: 10px;
 }
 
